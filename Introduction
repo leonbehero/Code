@@ -1,0 +1,65 @@
+1. Tell me about yourself.
+I’ve been with bet365 for over 15 years, most recently as an CS Deputy Manager, but in that role, I’ve also taken a strong technical lead. I’ve built and maintained SQL-based reporting systems, created MS Access databases, automated tasks using Excel VBA, and designed dashboards for performance monitoring.
+
+I’ve always had a passion for data — identifying cause of issue, building tools to automate workflows, and using data to support better decisions. With my current department being closed due to the company’s exit from the China market, I’m excited to pursue a more focused, technical role where I can apply and grow my skills full-time as a SQL Developer.
+
+2. Why are you applying for this role now?
+The upcoming closure of my department due to the company’s strategic shift gave me the chance to think about where I want to go next. I realized that the part of my work I’ve enjoyed most has always involved data — building databases, optimizing queries, and developing reporting tools.
+
+This role matches both my existing experience and the kind of work I want to do long-term. I already know bet365’s culture and high-performance environment, and I’m ready to grow technically while continuing to contribute in a new capacity.”
+
+3. What’s your experience with SQL Server or query optimization?
+I haven’t used SQL Server or MicroStrategy commercially yet. However, I have a solid foundation in SQL logic, relational database design, and performance reporting, which I’ve applied through MS Access and Excel VBA.
+
+I’ve built dashboards and tools that have been used across departments, and I’m very comfortable building systems that turn raw data into actionable insights. I’m already learning SQL Server on my own and exploring BI tools like MicroStrategy and Power BI. I’m confident that with my technical foundation and my deep understanding of bet365’s environment, I can ramp up quickly and deliver strong results.
+
+
+Working at bet365 has definitely sharpened my ability to work under pressure and meet tight deadlines — especially in a constantly changing environment. For example, when building reporting tools like the Payment System Dashboard, requirements often shifted mid-project based on new insights or business needs.
+
+I’ve learned to stay flexible, prioritize what’s most urgent, and still deliver accurate solutions quickly. I also make a point to communicate clearly with stakeholders to manage expectations and avoid bottlenecks. That balance of speed, structure, and adaptability has been key to getting things done in a reactive environment.
+
+
+ Tell me about yourself and your background.
+Goal: Provide a concise overview, highlight relevant experience (even if the tools are different), and transition to why you're applying for this role now.
+Your Answer (based on our prep):
+"I've been with bet365 for over 14 years, most recently as a Customer Service Deputy Manager. While my official title isn't purely technical, a significant part of my work has involved designing, building, and optimizing data-driven tools and reporting solutions using SQL, MS Access, and Excel VBA. For instance, I developed the Agent Performance Tracker and the Payment System Monitoring Dashboard, which are critical for operational analysis and decision-making. My passion lies in solving complex problems through data and automation, and with the upcoming closure of my current department, I'm excited to fully focus on this area in a dedicated SQL Developer role, leveraging the skills I've built and the knowledge I have of bet365's data landscape."
+2. Why are you applying for this specific SQL Developer role at this time?
+Goal: Connect your career shift to the specific role, explain the redundancy situation professionally, and show genuine interest.
+Your Answer (based on our prep):
+"As you may know, bet365 is exiting the China market, which unfortunately means my current department will be closing soon, putting my role at risk. This transition, however, presented a clear opportunity for me to pivot into the area of work I'm most passionate about and have already been doing — data analysis, database design, and SQL development. This SQL Developer role aligns perfectly with my existing skills and my desire to work more deeply with large datasets, query optimization, and reporting systems. I'm excited about the chance to leverage my experience within bet365's complex data environment and contribute my problem-solving and technical automation abilities."
+3. Can you describe your experience with SQL? What kind of queries have you written?
+Goal: Explain your SQL experience, acknowledging the tools (MS Access, Excel) but emphasizing the underlying concepts and complexity.
+Your Answer:
+"I've used SQL extensively to power the reporting and data tools I've built. While primarily working within MS Access and integrating with Excel VBA, I've written complex queries involving multi-table joins, subqueries, aggregations, and calculated fields to extract, transform, and summarize operational data. For example, extracting performance data from disparate sources for the Agent Tracker required carefully crafted SQL. I also used SQL to pull and analyze transactional data for the Payment Dashboard. I understand the principles of relational databases and query logic, and I've already started enhancing my knowledge specifically in SQL Server syntax and features."
+4. This role involves working with large datasets, potentially billions of rows. How does your experience prepare you for working at that scale?
+Goal: Address the scale gap by highlighting experience with your large datasets (even if not billions) and showing understanding of the challenges.
+Your Answer:
+"My projects, such as the Payment System Monitoring Dashboard, involved working with substantial datasets – often millions of rows of transactional data – requiring efficient data extraction and summarization. While I haven't worked with 'billions' of rows yet, I understand the critical importance of query performance and optimization when dealing with large volumes. My experience optimizing reports, like reducing a runtime from over a minute to under 10 seconds by refining SQL joins and indexing, shows I grasp the fundamental principles required for large-scale data. I'm eager to apply these concepts and learn the advanced techniques needed to handle the scale of data at bet365."
+5. The job description mentions performance monitoring and query tuning. Can you give an example of how you've optimized a query or improved system performance?
+Goal: Provide a specific example showcasing your understanding of performance optimization, even if in a different environment.
+Your Answer (using the report optimization example):
+"Yes, definitely. One instance was a report that was taking a significant time to generate, impacting our weekly review process. It was running for over a minute. After reviewing the SQL query, I identified several areas for improvement. I refactored unnecessary joins, ensured appropriate indexing was in place on key columns used in WHERE clauses and joins, and streamlined the overall query logic. This resulted in the report running in under 10 seconds, a significant improvement that saved time and allowed teams to access the data much faster."
+6. Have you worked with data visualization or Business Intelligence tools?
+Goal: Talk about your Excel dashboards and connect them conceptually to BI tools, addressing Microstrategy specifically if comfortable.
+Your Answer (using the mini-pitch):
+"Yes, I've built several Excel-based dashboards designed to visualize KPIs, monitor performance, and support decision-making. This includes the Payment System Monitoring Dashboard and dashboards for analyzing customer complaints. My focus has been on taking raw data, often extracted using SQL or transformed with VBA, and presenting it clearly to identify trends and drive action. While I haven't used commercial tools like MicroStrategy extensively yet, I see my dashboard development experience as a strong foundation. I'm actively exploring BI concepts and eager to learn and leverage MicroStrategy within this role."
+7. This role requires being extremely methodical and having strong attention to detail. Can you give an example?
+Goal: Provide an example where precision and validation were critical.
+Your Answer (using the mini-pitch):
+"I've always been very detail-oriented, which is crucial when working with data where accuracy is paramount. For example, when developing the Agent Performance Tracker and the Rota/NICE transformation tool, I was meticulous about data validation. I built logic to check calculations against known values, tested against various scenarios, and cross-referenced data sources to ensure consistency. For the Rota tool especially, transforming data from the new NICE system required strict attention to detail to ensure the output format was correct and reliable for immediate operational use. That precision builds trust in the tools and reports I deliver."
+8. The team works to deadlines in a continually changing, reactive environment. Can you provide an example of succeeding under pressure?
+Goal: Use your detailed STAR example about the Rota/NICE project.
+Your Answer (using the Rota/NICE STAR prep):
+"A strong example of this was the Rota/NICE system migration. Our department was moving to the new NICE system, but the reports were in a completely different format, and we needed a tool immediately to run shifts, including allocating breaks under a new policy. I was given just two weeks to develop a solution before the old system was retired. I quickly worked with the Resource team to understand NICE, analyzed the complex report structure, designed an MS Access tool with SQL logic to transform the data, and built an automatic break allocator. By breaking down the project, prioritizing key functions, setting tight internal deadlines, and maintaining constant communication, I delivered a fully functional tool on time that saved significant manual effort and allowed us to transition smoothly."
+9. What are your strengths as a potential SQL Developer?
+Goal: Summarize your key relevant strengths, framing them for this specific role.
+Your Answer:
+"I believe my key strengths for this role are my strong foundation in SQL logic and relational database concepts, even if applied in a different environment, my proven ability to build impactful reporting and automation tools from scratch (like the Agent Tracker and Payment Dashboard), my analytical and problem-solving skills in troubleshooting data issues, and my deep understanding of bet365's operational data needs gained over 14 years. I'm also a highly motivated self-learner and thrive in fast-paced, data-intensive environments."
+10. What are your long-term career goals?
+Goal: Show ambition and alignment with a technical career path.
+Your Answer (based on our prep):
+"My long-term goal is to become a specialist in the data field — ideally, a well-rounded Database Administrator or Data Engineer who can not only build complex queries and reports but also contribute to the design and performance of high-performance data systems. I’m passionate about continuous learning in this space, particularly around cloud databases and advanced performance tuning. This SQL Developer role is the ideal next step for me to deepen my technical expertise and contribute to Bet365's critical data infrastructure."
+11. What challenges do you anticipate in moving into this role?
+Goal: Be realistic but frame challenges as growth opportunities and emphasize how you're addressing them.
+Your Answer (combining points about tools/scale):
+"The primary challenge I anticipate is scaling my current experience with tools like MS Access and Excel to the commercial level of SQL Server and handling datasets of billions of rows. However, I see this as an exciting opportunity to grow. I've already started exploring SQL Server and large dataset concepts independently, and I'm confident that my strong foundation in SQL logic and problem-solving, combined with the structured learning environment of this team and my deep knowledge of bet365, will allow me to get up to speed quickly and contribute effectively."
