@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Study: Driving Performance Excellence | Mingtao Zhang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A; /* slate-900 */
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 350px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .kpi-card h3 {
+            color: #90E0EF;
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center my-12">
+            <h1 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Driving Performance Excellence</h1>
+            <p class="mt-4 text-lg md:text-xl text-slate-300 max-w-3xl mx-auto">A Strategic Vision for Quality Assurance by Mingtao Zhang</p>
+        </header>
+
+        <section id="vision" class="my-16">
+            <div class="text-center p-8 bg-slate-800/50 rounded-2xl max-w-4xl mx-auto border border-slate-700">
+                <h2 class="text-3xl font-bold text-cyan-400 mb-4">Vision & Objective</h2>
+                <p class="text-slate-300">
+                    To measure quality at scale and drive continuous improvements in our people, processes, products, and tools. This strategy aims to enhance business performance and customer experience by acting as a catalyst for proactive optimization, innovation, and a customer-centric culture.
+                </p>
+            </div>
+        </section>
+
+        <section id="data-review" class="my-16">
+            <h2 class="text-3xl font-bold text-center mb-8">A Holistic View of Performance Data</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700">
+                    <h3 class="text-2xl font-bold mb-3 text-cyan-400"><span class="mr-2">📊</span>QA & Agent Data</h3>
+                    <p class="text-slate-400">Analysis of QA scores, calibration data, and training records to pinpoint individual coaching needs and skill gaps.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700">
+                    <h3 class="text-2xl font-bold mb-3 text-cyan-400"><span class="mr-2">❤️</span>Customer Feedback</h3>
+                    <p class="text-slate-400">Leveraging CSAT, NPS, and complaint data to understand customer sentiment and identify pain points in products and processes.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700">
+                    <h3 class="text-2xl font-bold mb-3 text-cyan-400"><span class="mr-2">⚙️</span>Operational & Process Metrics</h3>
+                    <p class="text-slate-400">Monitoring FCR, AHT, error rates, and payment delays to identify systemic inefficiencies and opportunities for optimization.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="reporting-examples" class="my-16">
+            <h2 class="text-3xl font-bold text-center mb-12">Actionable Insights: Reporting Examples</h2>
+
+            <div class="bg-slate-800 p-6 md:p-8 rounded-2xl shadow-xl mb-12 border border-slate-700">
+                <h3 class="text-2xl font-bold mb-2 text-cyan-400">For Team Leaders: Weekly Team QA Summary</h3>
+                <p class="text-slate-400 mb-6">This view helps Team Leaders identify specific coaching opportunities. The chart shows a team-wide dip in "Problem Resolution," suggesting a new or complex issue is affecting multiple agents.</p>
+                <div class="chart-container">
+                    <canvas id="teamQaChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 p-6 md:p-8 rounded-2xl shadow-xl mb-12 border border-slate-700">
+                <h3 class="text-2xl font-bold mb-2 text-cyan-400">For Department Managers: Offer Impact Analysis</h3>
+                <p class="text-slate-400 mb-6">This analysis demonstrates the direct link between a complex marketing offer and operational strain. The surge in offer-related queries correlates with a dip in CSAT, providing a data-backed case for involving QA in offer design.</p>
+                <div class="chart-container">
+                    <canvas id="offerImpactChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="bg-slate-800 p-6 md:p-8 rounded-2xl shadow-xl mb-12 border border-slate-700">
+                <h3 class="text-2xl font-bold mb-2 text-cyan-400">For Senior Management: Business Impact Snapshot</h3>
+                <p class="text-slate-400 mb-6">This high-level view connects quality issues directly to business outcomes. The donut chart clearly shows that "Offer Clarity" and "Payment Delays" are the biggest drivers of customer complaints, indicating that strategic focus should extend beyond agent performance to product and process improvement.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="chart-container h-[300px] md:h-[350px]">
+                        <canvas id="complaintRootCauseChart"></canvas>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 kpi-card">
+                        <div class="bg-slate-900 p-4 rounded-lg text-center">
+                            <h3 class="text-lg font-semibold">Overall CSAT</h3>
+                            <p class="text-4xl font-bold text-red-400">-2%</p>
+                            <p class="text-slate-400 text-sm">vs Q1 2025</p>
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded-lg text-center">
+                             <h3 class="text-lg font-semibold">Complaint Rate</h3>
+                            <p class="text-4xl font-bold text-red-400">+28%</p>
+                             <p class="text-slate-400 text-sm">vs Q1 2025</p>
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded-lg text-center">
+                             <h3 class="text-lg font-semibold">Settlement Error Cost</h3>
+                            <p class="text-4xl font-bold text-green-400">-16.7%</p>
+                             <p class="text-slate-400 text-sm">vs Q1 2025</p>
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded-lg text-center">
+                             <h3 class="text-lg font-semibold">First Contact Resolution</h3>
+                            <p class="text-4xl font-bold text-red-400">-3%</p>
+                             <p class="text-slate-400 text-sm">vs Q1 2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="improvement-strategy" class="my-16">
+            <h2 class="text-3xl font-bold text-center mb-12">A Framework for Continuous Improvement</h2>
+            <div class="relative flex flex-col md:flex-row justify-center items-center gap-4 md:gap-0">
+                <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700 w-full md:w-1/4 z-10">
+                    <h3 class="font-bold text-xl text-cyan-400 mb-2">1. Plan</h3>
+                    <p class="text-slate-400">Identify performance gaps and systemic issues using data. Conduct root cause analysis with all affected teams.</p>
+                </div>
+                <div class="hidden md:block absolute text-cyan-500 text-4xl font-thin left-1/4 -ml-4">→</div>
+                 <div class="md:hidden text-cyan-500 text-4xl transform rotate-90 my-2">→</div>
+                <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700 w-full md:w-1/4 z-10">
+                    <h3 class="font-bold text-xl text-cyan-400 mb-2">2. Do</h3>
+                    <p class="text-slate-400">Implement solutions through extensive cross-functional collaboration with teams like Product, IT, and Marketing.</p>
+                </div>
+                <div class="hidden md:block absolute text-cyan-500 text-4xl left-1/2 -ml-4">→</div>
+                <div class="md:hidden text-cyan-500 text-4xl transform rotate-90 my-2">→</div>
+                <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700 w-full md:w-1/4 z-10">
+                    <h3 class="font-bold text-xl text-cyan-400 mb-2">3. Check</h3>
+                    <p class="text-slate-400">Monitor KPIs related to process efficiency, product usability, and customer experience to evaluate impact.</p>
+                </div>
+                 <div class="hidden md:block absolute text-cyan-500 text-4xl right-1/4 -ml-4">→</div>
+                 <div class="md:hidden text-cyan-500 text-4xl transform rotate-90 my-2">→</div>
+                <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700 w-full md:w-1/4 z-10">
+                    <h3 class="font-bold text-xl text-cyan-400 mb-2">4. Act</h3>
+                    <p class="text-slate-400">Standardize successful solutions, refine approaches, and share learnings to drive innovation and a customer-first culture.</p>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="text-center my-12 text-slate-500">
+            <p>This infographic presents a strategic framework for Quality Assurance. All data is illustrative.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const wrapLabel = (label, maxWidth) => {
+            const words = label.split(' ');
+            let lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + ' ' + words[i]).length > maxWidth) {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                } else {
+                    currentLine += ' ' + words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        };
+
+        const tooltipConfig = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            return Array.isArray(label) ? label.join(' ') : label;
+                        }
+                    }
+                },
+                legend: {
+                    labels: {
+                        color: '#cbd5e1' // slate-300
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#334155' }, // slate-700
+                    ticks: { color: '#94a3b8' } // slate-400
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#94a3b8' } // slate-400
+                }
+            }
+        };
+        
+        const brilliantBlues = ['#00B4D8', '#48CAE4', '#90E0EF', '#ADE8F4', '#0077B6'];
+
+        const teamQaCtx = document.getElementById('teamQaChart').getContext('2d');
+        const teamQaChart = new Chart(teamQaCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Compliance', wrapLabel('Problem Resolution', 16), wrapLabel('Soft Skills', 16), wrapLabel('Procedural Adherence', 16)],
+                datasets: [{
+                    label: 'Team Alpha QA Score (%)',
+                    data: [98, 88.8, 91.8, 95],
+                    backgroundColor: brilliantBlues,
+                    borderColor: '#0077B6',
+                    borderWidth: 1
+                }]
+            },
+            options: { ...tooltipConfig, maintainAspectRatio: false, responsive: true }
+        });
+
+        const offerImpactCtx = document.getElementById('offerImpactChart').getContext('2d');
+        const offerImpactChart = new Chart(offerImpactCtx, {
+            type: 'line',
+            data: {
+                labels: ['April (Pre-Offer)', 'May (Launch)', 'June (Active)'],
+                datasets: [
+                    {
+                        label: 'Offer-Related Query Rate (%)',
+                        data: [0.5, 4.2, 3.8],
+                        borderColor: '#00B4D8',
+                        backgroundColor: '#00B4D820',
+                        yAxisID: 'y',
+                        tension: 0.1,
+                        fill: true
+                    },
+                    {
+                        label: 'Overall Department CSAT (%)',
+                        data: [88, 86, 86.5],
+                        borderColor: '#FF6384',
+                        backgroundColor: '#FF638420',
+                        yAxisID: 'y1',
+                        tension: 0.1,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                ...tooltipConfig,
+                maintainAspectRatio: false, 
+                responsive: true,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'Query Rate (%)', color: '#94a3b8' },
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'CSAT (%)', color: '#94a3b8' },
+                        grid: { drawOnChartArea: false },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94a3b8' }
+                    }
+                }
+            }
+        });
+
+        const complaintRootCauseCtx = document.getElementById('complaintRootCauseChart').getContext('2d');
+        const complaintRootCauseChart = new Chart(complaintRootCauseCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [wrapLabel('Offer Clarity', 16), wrapLabel('Payment Delays', 16), wrapLabel('Agent Knowledge Gaps', 16), wrapLabel('System/Website Issues', 16)],
+                datasets: [{
+                    label: 'Root Cause of Complaints',
+                    data: [40, 25, 20, 15],
+                    backgroundColor: brilliantBlues,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#cbd5e1'
+                        }
+                    },
+                    tooltip: tooltipConfig.plugins.tooltip
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
