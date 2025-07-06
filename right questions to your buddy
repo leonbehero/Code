@@ -1,0 +1,72 @@
+Here’s a comprehensive list of smart, structured questions to ask your buddy (or mentor) to get up to speed quickly:
+
+🔹 System Overview & Architecture
+"Can you give me a high-level overview of the systems we work on?"
+
+"What are the main components or services, and how do they interact?"
+
+"Are we working in a monolith, microservices, or hybrid setup?"
+
+"Do we use any specific architectural patterns, like MVC, MVVM, or layered architecture?"
+
+🔹 Project Codebase
+"Where should I start exploring in the codebase to understand the business logic?"
+
+"Are there any key files, folders, or classes I should pay special attention to?"
+
+"Are there areas of the codebase that are especially important, fragile, or high-priority?"
+
+"Is there a documentation site or internal wiki for code explanations?"
+
+🔹 Tech Stack & Tools
+"Which frameworks and libraries are most commonly used in our project?"
+(e.g., .NET Core/Framework, Entity Framework, Dapper, SignalR, etc.)
+
+"Which tools do we use for version control, task tracking, and builds?"
+
+"How do we handle environment configuration and secrets?"
+
+"What does the local development setup look like?"
+
+🔹 Database & Data Flow
+"How is our database structured — is there a schema diagram or ERD I can review?"
+
+"Do we follow any data normalization practices?"
+
+"Are there any stored procedures, views, or data layers I should know about?"
+
+"What’s the typical flow of data from front-end to back-end to database?"
+
+🔹 Development Process
+"What’s the usual flow for picking up a task — from JIRA (or other tool) to production?"
+
+"How do we manage branches? Do we use feature branching, GitFlow, or something else?"
+
+"What are the rules or guidelines for making a pull request?"
+
+"Is there a code review checklist or style guide we follow?"
+
+🔹 Testing & Deployment
+"How do we write and run unit tests or integration tests?"
+
+"What CI/CD tools do we use for builds and deployments?"
+
+"Are there staging/test environments I can deploy to before production?"
+
+🔹 Personal Learning & Contribution
+"Are there any beginner-friendly tasks or tickets I can shadow or try working on?"
+
+"If I want to learn more about a specific system, are there any internal training resources or past tech talks I can look into?"
+
+"How do I raise questions or request help without disrupting others?"
+
+"How do we normally communicate as a team — Slack, Teams, daily standups?"
+
+💬 Bonus Questions to Build Trust and Learn Softly:
+"If you were new here again, what would you focus on in your first month?"
+
+"What’s one system or area you wish you’d understood earlier when you joined?"
+
+"Is there anything I should avoid doing as a new dev — even if well-intended?"
+
+Would you like this as a printable checklist or a digital doc template you can bring to your first week?
