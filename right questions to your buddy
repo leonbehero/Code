@@ -70,3 +70,78 @@ Here’s a comprehensive list of smart, structured questions to ask your buddy (
 "Is there anything I should avoid doing as a new dev — even if well-intended?"
 
 Would you like this as a printable checklist or a digital doc template you can bring to your first week?
+
+
+✅ Developer Workstation Setup Checklist
+🔧 Hardware
+ Laptop or desktop provided and powered on
+
+ Docking station (if applicable) connected properly
+
+ External monitors configured (extended display, resolution set)
+
+ Keyboard, mouse, headset working
+
+ Webcam and mic functional (for meetings)
+
+🔐 Login & Access
+ Able to log in with work credentials (Windows/SSO)
+
+ Access to internal VPN or network (if required)
+
+ Outlook or email system set up
+
+ Access to Microsoft Teams / Slack / Zoom
+
+ Internet access stable
+
+🧑‍💻 Development Tools
+ Visual Studio / VS Code installed and opens correctly
+
+ Git or version control client installed
+
+ SQL Server Management Studio or database tool installed
+
+ Required SDKs/frameworks (e.g., .NET Core, .NET Framework) installed
+
+ Local dev environment working (build/test a dummy project)
+
+🛠 Access to Key Systems
+ GitHub / GitLab / Azure DevOps access confirmed
+
+ Access to task tracker (e.g., JIRA, YouTrack)
+
+ Access to shared project repositories (clone access verified)
+
+ Access to internal wikis / documentation (e.g., Confluence, Notion)
+
+ Access to dev/staging environment (if applicable)
+
+🧩 Configuration
+ Environment variables / config files set up correctly
+
+ Database connection strings configured
+
+ Secrets/API keys securely stored (or available through secret manager)
+
+ Able to run, debug, and test a local project
+
+ Dev container or Docker (if used) working properly
+
+📝 Useful Questions to Ask
+“Can I walk through my setup with you to confirm everything looks right?”
+
+“Is there a checklist or onboarding script you usually follow for new devs?”
+
+“Do you use any internal dev templates or configuration guidelines I should follow?”
+
+📦 Optional (If Used in Your Team)
+ Access to Jira Service Desk or ticket queues
+
+ Access to build/deployment pipelines (e.g., Azure Pipelines, Jenkins)
+
+ Monitoring/logging tools (e.g., Kibana, Grafana, Sentry)
+
+ Access to shared file drives or SharePoint
+
+
