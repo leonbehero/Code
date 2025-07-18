@@ -18,7 +18,7 @@ var codeExtensions = []string{
 	".html", ".css", ".json", ".rb", ".rs", ".md",
 }
 
-// Folders to skip during traversal
+// Directories to exclude
 var excludeDirs = map[string]bool{
 	".git":         true,
 	"node_modules": true,
@@ -27,7 +27,7 @@ var excludeDirs = map[string]bool{
 	".vscode":      true,
 }
 
-// Check if a file has a supported extension
+// Determine if the file is a supported code file
 func isCodeFile(filename string) bool {
 	for _, ext := range codeExtensions {
 		if strings.HasSuffix(strings.ToLower(filename), ext) {
@@ -37,33 +37,33 @@ func isCodeFile(filename string) bool {
 	return false
 }
 
-// Check if directory should be skipped
+// Skip non-essential directories
 func shouldSkipDir(path string) bool {
 	base := filepath.Base(path)
 	return excludeDirs[base]
 }
 
-// Generate prompt text based on file name
-func generatePrompt(filename string) string {
+// Generate a rich prompt per file
+func generateFilePrompt(filename string) string {
 	lower := strings.ToLower(filename)
+
 	switch {
 	case strings.Contains(lower, "main"):
-		return "[This file likely contains the program entry point. Please summarize its purpose and logic.]"
+		return "[This is likely the entry point of the application. Explain its flow and how it connects to other components. List and describe key functions, setup steps, and configuration.]"
 	case strings.Contains(lower, "util"), strings.Contains(lower, "helper"):
-		return "[This file contains utility/helper functions. Please explain their role.]"
+		return "[This file contains utility or helper functions. Document each function’s purpose, usage, and where it is used in the codebase.]"
 	case strings.HasSuffix(lower, "_test.go"):
-		return "[This is a test file. Please describe what is being tested.]"
+		return "[This is a test file. Explain what is being tested, why, and how the tests are structured.]"
 	case strings.HasSuffix(lower, ".md"):
-		return "[This is a Markdown documentation file. Please summarize what it explains about the project.]"
+		return "[This is documentation. Summarize what the README or Markdown content tells us about how to install, run, or understand the project.]"
 	default:
-		return "[Please explain the functions and logic in this file.]"
+		return "[Explain the purpose of this file. List key functions, classes, handlers, or components. Describe what this file contributes to the whole system.]"
 	}
 }
 
-// Open the output file in the default editor (Windows Notepad, macOS TextEdit, Linux default)
+// Auto-open file after writing output
 func openFile(path string) {
 	var cmd *exec.Cmd
-
 	switch runtime.GOOS {
 	case "windows":
 		cmd = exec.Command("notepad", path)
@@ -78,14 +78,13 @@ func openFile(path string) {
 
 	err := cmd.Start()
 	if err != nil {
-		fmt.Println("⚠️ Failed to open file automatically. Please open it manually:", path)
+		fmt.Println("⚠️ Failed to open file. Please open it manually:", path)
 	} else {
 		fmt.Println("📄 Output file opened successfully.")
 	}
 }
 
 func main() {
-	// CLI arguments
 	dir := flag.String("path", "", "Path to the root of the codebase")
 	output := flag.String("out", "chatgpt_prompt_ready.txt", "Output file name")
 	flag.Parse()
@@ -98,14 +97,27 @@ func main() {
 
 	var result bytes.Buffer
 
-	// Intro prompt
-	result.WriteString("This is a codebase with multiple files. Please help me analyze it as follows:\n\n")
-	result.WriteString("1. Summarize the overall project purpose\n")
-	result.WriteString("2. Explain each file’s role and logic\n")
-	result.WriteString("3. Identify the entry point and key modules\n")
-	result.WriteString("4. Suggest improvements if any\n\n")
+	// 🔥 Enhanced Prompt Header
+	result.WriteString(`You are an expert codebase analyst. Please deeply analyze the following source code.
 
-	// Traverse and extract code files
+Your goal is to help a developer quickly understand this system.
+
+For the entire project, please:
+1. Summarize the overall project purpose and what problem it solves.
+2. Identify the entry point and high-level architecture (e.g., CLI, server, layers, modules).
+3. Generate a diagram or pseudocode of the business logic or data flow.
+4. List and explain key modules, functions, and how they are used.
+5. Explain how to run, build, or deploy the project. Include config flags, CLI commands, etc.
+6. If there’s a README, extract user instructions and setup steps.
+7. List and describe any dependencies or external libraries used.
+8. Identify design patterns or architectural decisions (e.g., RESTful API, pub/sub).
+9. Suggest areas of improvement (readability, performance, structure).
+10. Imagine you're creating an internal onboarding doc for a new dev: explain how to use and contribute to this project.
+
+Each file below includes a short request for you to explain its purpose and contents.
+`)
+
+	// Traverse code directory and gather content
 	err := filepath.Walk(*dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -120,7 +132,7 @@ func main() {
 				return err
 			}
 			result.WriteString(fmt.Sprintf("\n--- FILE: %s ---\n", relPath))
-			result.WriteString(generatePrompt(relPath) + "\n\n")
+			result.WriteString(generateFilePrompt(relPath) + "\n\n")
 			result.WriteString(string(content))
 			result.WriteString("\n\n")
 		}
@@ -128,20 +140,19 @@ func main() {
 	})
 
 	if err != nil {
-		fmt.Println("❌ Failed to read directory:", err)
+		fmt.Println("❌ Error walking directory:", err)
 		return
 	}
 
-	// Write to output file
-	finalText := result.String()
-	err = ioutil.WriteFile(*output, []byte(finalText), 0644)
+	// Write to .txt file
+	err = ioutil.WriteFile(*output, result.Bytes(), 0644)
 	if err != nil {
-		fmt.Println("❌ Failed to write output file:", err)
+		fmt.Println("❌ Error writing output file:", err)
 		return
 	}
 
-	fmt.Printf("✅ Output file saved: %s\n", *output)
+	fmt.Printf("✅ Output written to: %s\n", *output)
 
-	// Automatically open the file
+	// Auto-open the file
 	openFile(*output)
 }
