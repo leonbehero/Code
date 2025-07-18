@@ -12,13 +12,13 @@ import (
 	"strings"
 )
 
-// Supported source and documentation file extensions
+// Supported file extensions
 var codeExtensions = []string{
 	".go", ".py", ".js", ".ts", ".java", ".c", ".cpp", ".cs", ".php",
-	".html", ".css", ".json", ".rb", ".rs", ".md",
+	".html", ".css", ".json", ".rb", ".rs", ".md", ".sh", ".yaml", ".yml",
 }
 
-// Directories to exclude
+// Directory names to skip
 var excludeDirs = map[string]bool{
 	".git":         true,
 	"node_modules": true,
@@ -27,43 +27,73 @@ var excludeDirs = map[string]bool{
 	".vscode":      true,
 }
 
-// Determine if the file is a supported code file
-func isCodeFile(filename string) bool {
-	for _, ext := range codeExtensions {
-		if strings.HasSuffix(strings.ToLower(filename), ext) {
+// Determines if the file should be included
+func isRelevantFile(path string, info os.FileInfo) bool {
+	if info.IsDir() {
+		return false
+	}
+
+	ext := strings.ToLower(filepath.Ext(path))
+	base := strings.ToLower(filepath.Base(path))
+
+	// Match by extension
+	for _, validExt := range codeExtensions {
+		if ext == validExt {
 			return true
 		}
 	}
+
+	// Match known filenames without extension
+	switch base {
+	case "makefile", "dockerfile", ".env", ".env.local", ".env.production", ".env.development", "docker-compose.yml", "docker-compose.yaml", ".gitlab-ci.yml", "workflow.yaml", "workflow.yml":
+		return true
+	}
+
 	return false
 }
 
-// Skip non-essential directories
+// Determine if the directory should be skipped
 func shouldSkipDir(path string) bool {
 	base := filepath.Base(path)
 	return excludeDirs[base]
 }
 
-// Generate a rich prompt per file
+// Prompt per file
 func generateFilePrompt(filename string) string {
 	lower := strings.ToLower(filename)
 
 	switch {
 	case strings.Contains(lower, "main"):
-		return "[This is likely the entry point of the application. Explain its flow and how it connects to other components. List and describe key functions, setup steps, and configuration.]"
+		return "[This is likely the entry point of the application. Explain its structure and flow. List any config flags, setups, and modules it uses.]"
 	case strings.Contains(lower, "util"), strings.Contains(lower, "helper"):
-		return "[This file contains utility or helper functions. Document each function’s purpose, usage, and where it is used in the codebase.]"
+		return "[This file contains helper functions. Explain what utilities are here and how they’re used by the rest of the project.]"
 	case strings.HasSuffix(lower, "_test.go"):
-		return "[This is a test file. Explain what is being tested, why, and how the tests are structured.]"
+		return "[This is a test file. Explain what it tests, how it's structured, and how it's run.]"
 	case strings.HasSuffix(lower, ".md"):
-		return "[This is documentation. Summarize what the README or Markdown content tells us about how to install, run, or understand the project.]"
+		return "[This is Markdown documentation. Summarize any setup, usage, or architecture described in it.]"
+	case strings.HasSuffix(lower, ".sh"):
+		return "[This is a shell script. Explain what this script automates step by step, and how to use it.]"
+	case strings.HasSuffix(lower, ".yml"), strings.HasSuffix(lower, ".yaml"):
+		return "[This is a YAML configuration file. Explain what this config controls (e.g. CI/CD, Docker, Kubernetes), and how it affects the app.]"
+	case strings.HasSuffix(lower, ".json"):
+		return "[This is a JSON configuration file. Explain what it configures and what values are important.]"
+	case lower == "makefile":
+		return "[This is a Makefile. List each build target and explain its purpose. Describe how it's used in the workflow.]"
+	case lower == "dockerfile":
+		return "[This is a Dockerfile. Explain the image build process, entrypoint, and runtime environment.]"
+	case lower == ".env" || strings.HasPrefix(lower, ".env"):
+		return "[This is an environment variable file. Explain the meaning of each variable and how it impacts the application.]"
+	case lower == ".gitlab-ci.yml" || strings.Contains(lower, "workflow"):
+		return "[This is a CI/CD pipeline file. Describe the stages, jobs, triggers, and deployment logic.]"
 	default:
-		return "[Explain the purpose of this file. List key functions, classes, handlers, or components. Describe what this file contributes to the whole system.]"
+		return "[Explain what this file does. List key functions or classes, their responsibilities, and how it integrates into the whole app.]"
 	}
 }
 
-// Auto-open file after writing output
+// Opens the file in default editor (OS-specific)
 func openFile(path string) {
 	var cmd *exec.Cmd
+
 	switch runtime.GOOS {
 	case "windows":
 		cmd = exec.Command("notepad", path)
@@ -97,27 +127,22 @@ func main() {
 
 	var result bytes.Buffer
 
-	// 🔥 Enhanced Prompt Header
-	result.WriteString(`You are an expert codebase analyst. Please deeply analyze the following source code.
+	// 🧠 High-level project prompt
+	result.WriteString(`You are an expert software architect. Please analyze the following codebase in detail.
 
-Your goal is to help a developer quickly understand this system.
+1. Summarize the purpose of this application and its domain.
+2. Identify the project’s entry point, high-level architecture, and business logic.
+3. Generate a flow diagram or pseudocode of the system logic or service structure.
+4. Explain how to run, build, or deploy this application.
+5. Describe key functions, configuration files, and interactions between components.
+6. Extract environment settings and CI/CD behaviors from config files.
+7. Suggest improvements in structure, readability, or performance.
+8. Act as if writing onboarding documentation for a new developer.
 
-For the entire project, please:
-1. Summarize the overall project purpose and what problem it solves.
-2. Identify the entry point and high-level architecture (e.g., CLI, server, layers, modules).
-3. Generate a diagram or pseudocode of the business logic or data flow.
-4. List and explain key modules, functions, and how they are used.
-5. Explain how to run, build, or deploy the project. Include config flags, CLI commands, etc.
-6. If there’s a README, extract user instructions and setup steps.
-7. List and describe any dependencies or external libraries used.
-8. Identify design patterns or architectural decisions (e.g., RESTful API, pub/sub).
-9. Suggest areas of improvement (readability, performance, structure).
-10. Imagine you're creating an internal onboarding doc for a new dev: explain how to use and contribute to this project.
-
-Each file below includes a short request for you to explain its purpose and contents.
+Each file below includes a short prompt. Please explain it in context.
 `)
 
-	// Traverse code directory and gather content
+	// Traverse the folder
 	err := filepath.Walk(*dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -125,14 +150,14 @@ Each file below includes a short request for you to explain its purpose and cont
 		if info.IsDir() && shouldSkipDir(path) {
 			return filepath.SkipDir
 		}
-		if !info.IsDir() && isCodeFile(path) {
+		if isRelevantFile(path, info) {
 			relPath, _ := filepath.Rel(*dir, path)
 			content, err := ioutil.ReadFile(path)
 			if err != nil {
 				return err
 			}
 			result.WriteString(fmt.Sprintf("\n--- FILE: %s ---\n", relPath))
-			result.WriteString(generateFilePrompt(relPath) + "\n\n")
+			result.WriteString(generateFilePrompt(filepath.Base(path)) + "\n\n")
 			result.WriteString(string(content))
 			result.WriteString("\n\n")
 		}
@@ -140,19 +165,16 @@ Each file below includes a short request for you to explain its purpose and cont
 	})
 
 	if err != nil {
-		fmt.Println("❌ Error walking directory:", err)
+		fmt.Println("❌ Error walking the directory:", err)
 		return
 	}
 
-	// Write to .txt file
 	err = ioutil.WriteFile(*output, result.Bytes(), 0644)
 	if err != nil {
-		fmt.Println("❌ Error writing output file:", err)
+		fmt.Println("❌ Error writing the output file:", err)
 		return
 	}
 
-	fmt.Printf("✅ Output written to: %s\n", *output)
-
-	// Auto-open the file
+	fmt.Printf("✅ Output saved: %s\n", *output)
 	openFile(*output)
 }
