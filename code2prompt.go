@@ -1,21 +1,24 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
-
-	"github.com/atotto/clipboard"
 )
 
+// Supported source and documentation file extensions
 var codeExtensions = []string{
 	".go", ".py", ".js", ".ts", ".java", ".c", ".cpp", ".cs", ".php",
-	".html", ".css", ".json", ".rb", ".rs", ".md", // <- 添加 markdown 文件支持
+	".html", ".css", ".json", ".rb", ".rs", ".md",
 }
 
+// Folders to skip during traversal
 var excludeDirs = map[string]bool{
 	".git":         true,
 	"node_modules": true,
@@ -24,20 +27,23 @@ var excludeDirs = map[string]bool{
 	".vscode":      true,
 }
 
+// Check if a file has a supported extension
 func isCodeFile(filename string) bool {
 	for _, ext := range codeExtensions {
-		if strings.HasSuffix(filename, ext) {
+		if strings.HasSuffix(strings.ToLower(filename), ext) {
 			return true
 		}
 	}
 	return false
 }
 
+// Check if directory should be skipped
 func shouldSkipDir(path string) bool {
 	base := filepath.Base(path)
 	return excludeDirs[base]
 }
 
+// Generate prompt text based on file name
 func generatePrompt(filename string) string {
 	lower := strings.ToLower(filename)
 	switch {
@@ -48,16 +54,40 @@ func generatePrompt(filename string) string {
 	case strings.HasSuffix(lower, "_test.go"):
 		return "[This is a test file. Please describe what is being tested.]"
 	case strings.HasSuffix(lower, ".md"):
-		return "[This is a Markdown documentation file (e.g. README). Please summarize what it explains about the project.]"
+		return "[This is a Markdown documentation file. Please summarize what it explains about the project.]"
 	default:
 		return "[Please explain the functions and logic in this file.]"
 	}
 }
 
+// Open the output file in the default editor (Windows Notepad, macOS TextEdit, Linux default)
+func openFile(path string) {
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("notepad", path)
+	case "darwin":
+		cmd = exec.Command("open", path)
+	case "linux":
+		cmd = exec.Command("xdg-open", path)
+	default:
+		fmt.Println("❌ Cannot open file: unsupported OS.")
+		return
+	}
+
+	err := cmd.Start()
+	if err != nil {
+		fmt.Println("⚠️ Failed to open file automatically. Please open it manually:", path)
+	} else {
+		fmt.Println("📄 Output file opened successfully.")
+	}
+}
+
 func main() {
+	// CLI arguments
 	dir := flag.String("path", "", "Path to the root of the codebase")
 	output := flag.String("out", "chatgpt_prompt_ready.txt", "Output file name")
-	copyToClipboard := flag.Bool("copy", true, "Copy final output to clipboard")
 	flag.Parse()
 
 	if *dir == "" {
@@ -66,13 +96,16 @@ func main() {
 		return
 	}
 
-	var result strings.Builder
+	var result bytes.Buffer
 
-	// 头部说明
-	result.WriteString("This is a codebase with multiple files. Please analyze it as follows:\n\n")
-	result.WriteString("1. Summarize the overall project purpose\n2. Explain each file’s role and logic\n3. Identify the entry point and key modules\n4. Suggest improvements if any\n\n")
+	// Intro prompt
+	result.WriteString("This is a codebase with multiple files. Please help me analyze it as follows:\n\n")
+	result.WriteString("1. Summarize the overall project purpose\n")
+	result.WriteString("2. Explain each file’s role and logic\n")
+	result.WriteString("3. Identify the entry point and key modules\n")
+	result.WriteString("4. Suggest improvements if any\n\n")
 
-	// 遍历目录
+	// Traverse and extract code files
 	err := filepath.Walk(*dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -95,26 +128,20 @@ func main() {
 	})
 
 	if err != nil {
-		fmt.Println("❌ Failed to walk through directory:", err)
+		fmt.Println("❌ Failed to read directory:", err)
 		return
 	}
 
-	// 写入 txt 文件
+	// Write to output file
 	finalText := result.String()
 	err = ioutil.WriteFile(*output, []byte(finalText), 0644)
 	if err != nil {
 		fmt.Println("❌ Failed to write output file:", err)
 		return
 	}
+
 	fmt.Printf("✅ Output file saved: %s\n", *output)
 
-	// 复制到剪贴板
-	if *copyToClipboard {
-		err = clipboard.WriteAll(finalText)
-		if err != nil {
-			fmt.Println("⚠️  Output file saved, but failed to copy to clipboard:", err)
-			return
-		}
-		fmt.Println("📋 Output copied to clipboard!")
-	}
+	// Automatically open the file
+	openFile(*output)
 }
