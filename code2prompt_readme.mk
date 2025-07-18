@@ -1,35 +1,33 @@
-🧠 code2prompt – Codebase to ChatGPT Prompt Converter
-=====================================================
+🧠 code2prompt – Codebase-to-ChatGPT Prompt Converter
+======================================================
 
-This CLI tool automatically reads your local codebase, merges all source files (e.g., .go, .py, .js, .md, etc.), inserts helpful prompts, and outputs a ChatGPT-ready `.txt` file for code understanding and analysis.
+code2prompt is a CLI tool that scans a source code project folder, collects all relevant files (code, config, script, documentation), and generates a single .txt file. This file includes rich AI prompts to help tools like ChatGPT analyze and explain the entire system.
 
-📦 Features:
-- Supports .go, .js, .py, .ts, .java, .json, .php, .html, .css, .md, etc.
-- Skips folders like `.git`, `node_modules`, `vendor`, `.vscode`, etc.
-- Adds prompt instructions before each file for easier ChatGPT comprehension
-- Saves result as a `.txt` file and automatically opens it (on Windows)
+📦 Key Features:
+---------------
+- Supports `.go`, `.js`, `.ts`, `.py`, `.java`, `.sh`, `.yml`, `.yaml`, `.json`, `.md`, and more.
+- Also includes special files like `Makefile`, `Dockerfile`, `.env`, `.gitlab-ci.yml`, etc.
+- Auto-generates AI-friendly prompts for each file to request explanation.
+- Summarizes project architecture, business logic, environment config, and usage instructions.
+- Automatically opens the output file after generation (on supported OS).
+
+🛠️ Requirements:
+---------------
+- Go 1.20 or later (to build)
+- No external dependencies required
 
 📄 Output:
-- Default file: `chatgpt_prompt_ready.txt`
-- Prompted, readable, ready to paste into ChatGPT or other AI tools
-
-🖥️ How to Use:
-
-Windows:
 --------
-1. Run in terminal:
-   `code2prompt.exe -path="C:\path\to\your\project"`
+- File: `chatgpt_prompt_ready.txt`
+- Format: Human-readable plain text
+- Usage: Paste into ChatGPT or any AI tool to receive detailed explanations
 
-2. The tool will create and open the `chatgpt_prompt_ready.txt` file automatically.
+🚀 How to Use:
+--------------
 
-Linux:
-------
-1. Open terminal
-2. Grant permission (if needed):
-   `chmod +x code2prompt`
-3. Run:
-   `./code2prompt -path="/path/to/your/project"`
-
-💡 Tips:
-- You can rename the output file using `-out=yourfile.txt`
-- You may run this in any folder containing a code project
+▶ Windows:
+----------
+1. Double-click `run_code2prompt.bat`
+2. Or run from terminal:
+   ```bash
+   code2prompt.exe -path="C:\path\to\your\project"
