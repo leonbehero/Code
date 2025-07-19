@@ -1,33 +1,58 @@
-🧠 code2prompt – Codebase-to-ChatGPT Prompt Converter
-======================================================
+🧠 code2prompt – Codebase-to-AI Prompt Generator
+===============================================
 
-code2prompt is a CLI tool that scans a source code project folder, collects all relevant files (code, config, script, documentation), and generates a single .txt file. This file includes rich AI prompts to help tools like ChatGPT analyze and explain the entire system.
+code2prompt is a command-line tool that reads your entire codebase, collects meaningful files, and generates prompts for use in ChatGPT or other AI models.
 
-📦 Key Features:
----------------
-- Supports `.go`, `.js`, `.ts`, `.py`, `.java`, `.sh`, `.yml`, `.yaml`, `.json`, `.md`, and more.
-- Also includes special files like `Makefile`, `Dockerfile`, `.env`, `.gitlab-ci.yml`, etc.
-- Auto-generates AI-friendly prompts for each file to request explanation.
-- Summarizes project architecture, business logic, environment config, and usage instructions.
-- Automatically opens the output file after generation (on supported OS).
+🎯 Features:
+-----------
+- Supports three intelligent modes:
+  - explain: Let AI explain architecture, key modules, logic, and usage
+  - debug: Let AI read codebase, wait for your error message, and suggest fixes
+  - clone: Let AI reuse this codebase structure to help build a new project
 
-🛠️ Requirements:
----------------
-- Go 1.20 or later (to build)
-- No external dependencies required
+- Supports: `.go`, `.py`, `.sh`, `.md`, `.yaml`, `.yml`, `.env`, `Dockerfile`, `Makefile`, `.json`, `.gitlab-ci.yml`, etc.
+- Automatically opens the output `.txt` file
+- No third-party dependencies needed
 
-📄 Output:
+🛠️ Usage:
 --------
-- File: `chatgpt_prompt_ready.txt`
-- Format: Human-readable plain text
-- Usage: Paste into ChatGPT or any AI tool to receive detailed explanations
 
-🚀 How to Use:
+▶ From terminal:
+```bash
+code2prompt -path="/path/to/project" -mode=explain
+```
+
+▶ From launcher script:
+- Windows: double-click `run_code2prompt.bat`
+- Linux/macOS:
+  ```bash
+  chmod +x run_code2prompt.sh
+  ./run_code2prompt.sh
+  ```
+
+📄 Output File:
 --------------
+- `chatgpt_prompt_ready.txt`
+- Paste into ChatGPT for detailed codebase help
 
-▶ Windows:
-----------
-1. Double-click `run_code2prompt.bat`
-2. Or run from terminal:
-   ```bash
-   code2prompt.exe -path="C:\path\to\your\project"
+📦 Release Contents:
+-------------------
+- code2prompt.exe (Windows binary)
+- code2prompt      (Linux/macOS binary, optional)
+- run_code2prompt.bat
+- run_code2prompt.sh
+- README.txt
+
+📬 Feedback & Improvements:
+---------------------------
+- Add interactive UI (optional)
+- Allow filtering file types
+- Output multiple formats (.md, .html, etc.)
+- Support saving last-used path
+
+---
+
+💡 Made with Go. Designed for developers who love automation.
+```
+
+---
