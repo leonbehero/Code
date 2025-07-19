@@ -93,7 +93,6 @@ func generateFilePrompt(filename string) string {
 // Opens the file in default editor (OS-specific)
 func openFile(path string) {
 	var cmd *exec.Cmd
-
 	switch runtime.GOOS {
 	case "windows":
 		cmd = exec.Command("notepad", path)
@@ -105,31 +104,40 @@ func openFile(path string) {
 		fmt.Println("❌ Cannot open file: unsupported OS.")
 		return
 	}
-
-	err := cmd.Start()
-	if err != nil {
-		fmt.Println("⚠️ Failed to open file. Please open it manually:", path)
-	} else {
-		fmt.Println("📄 Output file opened successfully.")
-	}
+	_ = cmd.Start()
 }
 
-func main() {
-	dir := flag.String("path", "", "Path to the root of the codebase")
-	output := flag.String("out", "chatgpt_prompt_ready.txt", "Output file name")
-	flag.Parse()
+func getGlobalPrompt(mode string) string {
+	switch mode {
+	case "debug":
+		return `🛠️ Debugging Prompt
 
-	if *dir == "" {
-		fmt.Println("❌ Error: Please provide a path using -path argument.")
-		flag.Usage()
-		return
-	}
+You now have access to the entire source code of this project.
+Please wait for me to input a runtime error message, log output, or a description of incorrect behavior.
+Your task is to:
+1. Use your understanding of the codebase to trace the issue.
+2. Identify the root cause of the bug.
+3. Suggest code-level fixes or improvements.
+4. Recommend ways to verify the fix (e.g., tests or logs).
 
-	var result bytes.Buffer
+Below is the codebase:`
+	case "clone":
+		return `📦 Clone & Reuse Prompt
 
-	// 🧠 High-level project prompt
-	result.WriteString(`You are an expert software architect. Please analyze the following codebase in detail.
+You now have access to a complete reference project. Please study its structure, architecture, function names, and layout.
+Soon I will provide a different problem or project idea.
+Your task is to:
+1. Use the reference's structure and engineering patterns.
+2. Help design and implement a new project in a similar style.
+3. Suggest folders, files, and starting points.
+4. Write matching code based on my idea using this template.
 
+Below is the reference codebase:`
+	default:
+		return `🔍 Architecture and Functionality Analysis Prompt
+
+You are an expert software engineer. Please analyze the following codebase.
+Your task is to:
 1. Summarize the purpose of this application and its domain.
 2. Identify the project’s entry point, high-level architecture, and business logic.
 3. Generate a flow diagram or pseudocode of the system logic or service structure.
@@ -139,10 +147,30 @@ func main() {
 7. Suggest improvements in structure, readability, or performance.
 8. Act as if writing onboarding documentation for a new developer.
 
-Each file below includes a short prompt. Please explain it in context.
-`)
+Each file includes a short guidance prompt.`
+	}
+}
 
-	// Traverse the folder
+func main() {
+	dir := flag.String("path", "", "Path to the root of the codebase")
+	output := flag.String("out", "chatgpt_prompt_ready.txt", "Output file name")
+	mode := flag.String("mode", "explain", "Prompt mode: explain, debug, or clone (default: explain)")
+	flag.Parse()
+
+	if *dir == "" {
+		fmt.Println("❌ Error: Please provide a path using -path argument.")
+		flag.Usage()
+		return
+	}
+
+	if *mode != "explain" && *mode != "debug" && *mode != "clone" {
+		fmt.Println("❌ Invalid mode. Use -mode=explain, -mode=debug or -mode=clone.")
+		return
+	}
+
+	var result bytes.Buffer
+	result.WriteString(getGlobalPrompt(*mode))
+
 	err := filepath.Walk(*dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -156,9 +184,9 @@ Each file below includes a short prompt. Please explain it in context.
 			if err != nil {
 				return err
 			}
-			result.WriteString(fmt.Sprintf("\n--- FILE: %s ---\n", relPath))
+			result.WriteString("\n--- FILE: " + relPath + " ---\n")
 			result.WriteString(generateFilePrompt(filepath.Base(path)) + "\n\n")
-			result.WriteString(string(content))
+			result.Write(content)
 			result.WriteString("\n\n")
 		}
 		return nil
@@ -175,6 +203,6 @@ Each file below includes a short prompt. Please explain it in context.
 		return
 	}
 
-	fmt.Printf("✅ Output saved: %s\n", *output)
+	fmt.Println("✅ Output saved to:", *output)
 	openFile(*output)
 }
