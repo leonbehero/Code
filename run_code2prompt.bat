@@ -1,18 +1,18 @@
 @echo off
 setlocal
 
-:: Prompt the user to input the folder path
-set /p PROJECT_PATH=Enter full path to your project folder: 
-
-:: If no input is provided, exit
+:: Ask for project path
+set /p PROJECT_PATH=Enter the full path to your project folder: 
 if "%PROJECT_PATH%"=="" (
     echo ❌ No path entered. Exiting.
     exit /b
 )
 
-:: Run the Go-built EXE with the given path
-echo 🔍 Running code2prompt.exe...
-code2prompt.exe -path="%PROJECT_PATH%"
+:: Ask for mode
+set /p MODE=Enter mode (explain/debug/clone) [default: explain]: 
+if "%MODE%"=="" set MODE=explain
 
-:: Prevent window from closing immediately
+:: Run the program
+code2prompt.exe -path="%PROJECT_PATH%" -mode=%MODE%
 pause
+```
