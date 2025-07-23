@@ -1,15 +1,25 @@
 #!/bin/bash
 
-read -rp "Enter the full path to your project folder: " PROJECT_PATH
-if [ -z "$PROJECT_PATH" ]; then
-  echo "❌ No path entered. Exiting."
-  exit 1
-fi
+echo "Running Code2Prompt Tool"
+echo "-------------------------"
+echo "Select Mode:"
+echo "1. explain"
+echo "2. debug"
+echo "3. clone"
+echo "4. rewrite (old C# codebase)"
+echo "5. rewrite-sample (Go example project)"
+read -p "Enter mode number (1-5): " mode
 
-read -rp "Enter mode (explain/debug/clone) [default: explain]: " MODE
-if [ -z "$MODE" ]; then
-  MODE="explain"
-fi
+case "$mode" in
+  1) MODE="explain" ;;
+  2) MODE="debug" ;;
+  3) MODE="clone" ;;
+  4) MODE="rewrite" ;;
+  5) MODE="rewrite-sample" ;;
+  *) echo "Invalid mode"; exit 1 ;;
+esac
 
-./code2prompt -path="$PROJECT_PATH" -mode="$MODE"
-```
+read -p "Enter the full path to your codebase folder: " path
+
+echo "Running with mode $MODE on $path"
+./code2prompt -mode="$MODE" -path="$path"
