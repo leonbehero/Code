@@ -133,6 +133,11 @@ Your task is to:
 4. Write matching code based on my idea using this template.
 
 Below is the reference codebase:`
+
+	case "rewrite":
+		return `🔁 C# to Go Codebase Migration Prompt\n\nYou will first see the legacy C# project. Please analyze and wait.\nThen you will receive the Go sample. Your task will be to rewrite the legacy project following the Go example.\n\nBelow is the C# codebase:`
+	case "rewrite-sample":
+		return `📌 Sample Go Template Reference\n\nNow you will see the Go codebase that represents our target structure.\nUse this as the target architecture for rewriting the legacy C# codebase previously provided.`
 	default:
 		return `🔍 Architecture and Functionality Analysis Prompt
 
@@ -154,7 +159,7 @@ Each file includes a short guidance prompt.`
 func main() {
 	dir := flag.String("path", "", "Path to the root of the codebase")
 	output := flag.String("out", "chatgpt_prompt_ready.txt", "Output file name")
-	mode := flag.String("mode", "explain", "Prompt mode: explain, debug, or clone (default: explain)")
+	mode := flag.String("mode", "explain", "Prompt mode: explain, debug, clone, rewrite, rewrite-sample")
 	flag.Parse()
 
 	if *dir == "" {
@@ -163,8 +168,8 @@ func main() {
 		return
 	}
 
-	if *mode != "explain" && *mode != "debug" && *mode != "clone" {
-		fmt.Println("❌ Invalid mode. Use -mode=explain, -mode=debug or -mode=clone.")
+	if *mode != "explain" && *mode != "debug" && *mode != "clone" && *mode != "rewrite" && *mode != "rewrite-sample" {
+		fmt.Println("❌ Invalid mode. Use -mode=explain, -mode=debug or -mode=clone or -mode=rewrite or -mode=rewrite-sample.")
 		return
 	}
 
