@@ -1,0 +1,212 @@
+You are an experienced database analyst.
+
+I will provide you with the structure of a SQL Server database, including:
+- Table names, columns, data types, and primary key flags
+- Foreign key relationships
+- Top 5 sample rows for each table (in JSON format)
+
+Please summarize the purpose of each table in plain, concise English.
+
+Your summary should:
+1. Clearly describe the main function and business role of each table.
+2. If the table is a core business table, describe its relationships with other tables.
+3. If the table is a lookup/configuration table, mark it as "System Configuration Table".
+4. If the table is a log/history table, describe what type of events it records.
+
+Here is the database JSON data:
+[Paste JSON here]
+
+
+
+
+-- ==========================================
+-- 1. 表结构信息
+-- ==========================================
+SELECT 
+    t.name AS TableName,
+    c.name AS ColumnName,
+    ty.name AS DataType,
+    c.max_length AS MaxLength,
+    CASE WHEN pk.column_id IS NOT NULL THEN 1 ELSE 0 END AS IsPrimaryKey
+FROM sys.tables t
+JOIN sys.columns c ON t.object_id = c.object_id
+JOIN sys.types ty ON c.user_type_id = ty.user_type_id
+LEFT JOIN (
+    SELECT i.object_id, ic.column_id
+    FROM sys.indexes i
+    JOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id
+    WHERE i.is_primary_key = 1
+) pk ON c.object_id = pk.object_id AND c.column_id = pk.column_id
+ORDER BY t.name, c.column_id;
+
+-- ==========================================
+-- 2. 外键关系
+-- ==========================================
+SELECT 
+    fk.name AS ForeignKeyName,
+    tp.name AS ParentTable,
+    ref.name AS ReferencedTable
+FROM sys.foreign_keys fk
+JOIN sys.tables tp ON fk.parent_object_id = tp.object_id
+JOIN sys.tables ref ON fk.referenced_object_id = ref.object_id
+ORDER BY ParentTable;
+
+-- ==========================================
+-- 3. 每个表的前 5 行数据 (生成 SQL)
+-- ==========================================
+DECLARE @sql NVARCHAR(MAX) = '';
+SELECT @sql = @sql + 'SELECT TOP 5 * FROM [' + s.name + '].[' + t.name + '];' + CHAR(13)
+FROM sys.tables t
+JOIN sys.schemas s ON t.schema_id = s.schema_id
+ORDER BY t.name;
+
+PRINT @sql; -- 你可以先复制出来执行，避免一次性跑所有表
+
+
+
+
+
+1️⃣ 遍历 SQL Server 整个服务器的所有数据库
+你可以使用系统视图 sys.databases 获取所有数据库，然后动态拼接 SQL 去查询每个数据库的表、视图、存储过程等。
+
+获取所有数据库
+sql
+复制
+编辑
+SELECT name 
+FROM sys.databases
+WHERE database_id > 4; -- 排除系统数据库 master, model, msdb, tempdb
+2️⃣ 获取 每个数据库 的表、视图、存储过程
+在单个数据库中，你可以用这些查询：
+
+表（Tables）
+sql
+复制
+编辑
+SELECT TABLE_SCHEMA, TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_TYPE = 'BASE TABLE';
+视图（Views）
+sql
+复制
+编辑
+SELECT TABLE_SCHEMA, TABLE_NAME
+FROM INFORMATION_SCHEMA.VIEWS;
+存储过程（Stored Procedures）
+sql
+复制
+编辑
+SELECT ROUTINE_SCHEMA, ROUTINE_NAME
+FROM INFORMATION_SCHEMA.ROUTINES
+WHERE ROUTINE_TYPE = 'PROCEDURE';
+3️⃣ 跨数据库遍历（动态 SQL）
+你可以用一个循环遍历所有数据库，例如：
+
+sql
+复制
+编辑
+DECLARE @db NVARCHAR(128)
+DECLARE @sql NVARCHAR(MAX)
+
+DECLARE db_cursor CURSOR FOR
+SELECT name 
+FROM sys.databases
+WHERE database_id > 4; -- 排除系统数据库
+
+OPEN db_cursor  
+FETCH NEXT FROM db_cursor INTO @db  
+
+WHILE @@FETCH_STATUS = 0  
+BEGIN  
+    SET @sql = '
+    USE [' + @db + '];
+    SELECT ''' + @db + ''' AS DatabaseName, TABLE_SCHEMA, TABLE_NAME
+    FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_TYPE = ''BASE TABLE'';
+
+    SELECT ''' + @db + ''' AS DatabaseName, TABLE_SCHEMA, TABLE_NAME
+    FROM INFORMATION_SCHEMA.VIEWS;
+
+    SELECT ''' + @db + ''' AS DatabaseName, ROUTINE_SCHEMA, ROUTINE_NAME
+    FROM INFORMATION_SCHEMA.ROUTINES
+    WHERE ROUTINE_TYPE = ''PROCEDURE'';
+    '
+    PRINT @sql -- 你可以先看SQL再决定执行
+    -- EXEC (@sql) -- 取消注释后执行
+    FETCH NEXT FROM db_cursor INTO @db  
+END  
+
+CLOSE db_cursor  
+DEALLOCATE db_cursor
+这样就可以批量扫描 整个 SQL Server 上的所有数据库 的表、视图和存储过程。
+
+4️⃣ 如果还要读取存储过程的内容
+sql
+复制
+编辑
+SELECT OBJECT_DEFINITION(OBJECT_ID('ProcedureName')) AS ProcedureDefinition;
+跨库时，你也可以在上面循环中执行类似：
+
+sql
+复制
+编辑
+SELECT name, OBJECT_DEFINITION(object_id) AS Definition
+FROM sys.procedures;
+💡 如果你用 MySQL 或 PostgreSQL，方法会不一样，不过也有类似的 INFORMATION_SCHEMA 视图可以用。
+
+
+
+1️⃣ 先收集元数据（Meta Data）
+你可以用 SQL 查询所有表名、列名、数据类型、主外键关系等，这些信息能帮助你猜用途。
+例如 SQL Server：
+
+sql
+复制
+编辑
+SELECT 
+    t.name AS TableName,
+    c.name AS ColumnName,
+    ty.name AS DataType,
+    c.max_length,
+    ep.value AS ColumnDescription
+FROM sys.tables t
+JOIN sys.columns c ON t.object_id = c.object_id
+JOIN sys.types ty ON c.user_type_id = ty.user_type_id
+LEFT JOIN sys.extended_properties ep 
+    ON t.object_id = ep.major_id 
+    AND c.column_id = ep.minor_id
+ORDER BY t.name, c.column_id;
+如果你的数据库有维护 Extended Properties（扩展属性），你能直接拿到说明。
+但很多公司没填这部分，所以这一步可能只能帮部分。
+
+2️⃣ 分析表名和列名
+表名（如 Customer, Order, PaymentTransaction）往往能直接提示业务用途。
+
+列名（如 customer_id, order_date, amount）可以帮助判断表的核心数据类型。
+
+如果命名不规范，可以用 自然语言模型（AI） 来自动解释。
+
+3️⃣ 利用外键关系推测用途
+你可以用以下 SQL 查询所有外键：
+
+sql
+复制
+编辑
+SELECT 
+    fk.name AS ForeignKeyName,
+    tp.name AS ParentTable,
+    ref.name AS ReferencedTable
+FROM sys.foreign_keys fk
+JOIN sys.tables tp ON fk.parent_object_id = tp.object_id
+JOIN sys.tables ref ON fk.referenced_object_id = ref.object_id;
+外键关系能告诉你哪些表是主业务表（如 Order）、哪些是明细表（如 OrderDetail）、哪些是配置或字典表。
+
+4️⃣ 抽样数据帮助理解
+随机取 5-10 行数据，可以直观看出表的用途：
+
+sql
+复制
+编辑
+DECLARE @table NVARCHAR(128) = 'YourTableName'
+EXEC('SELECT TOP 10 * FROM ' + @table)
+
