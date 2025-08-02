@@ -1,0 +1,92 @@
+-- ==========================================
+-- 1. Export database structure, foreign keys, and sample data as JSON
+-- ==========================================
+SET NOCOUNT ON;
+
+DECLARE @json NVARCHAR(MAX) = N'';
+
+-- 1. Table structure (columns, data types, primary key flag)
+DECLARE @tables NVARCHAR(MAX);
+SET @tables = (
+    SELECT 
+        t.name AS TableName,
+        (
+            SELECT 
+                c.name AS ColumnName,
+                ty.name AS DataType,
+                c.max_length AS MaxLength,
+                CASE WHEN pk.column_id IS NOT NULL THEN 1 ELSE 0 END AS IsPrimaryKey
+            FROM sys.columns c
+            JOIN sys.types ty ON c.user_type_id = ty.user_type_id
+            LEFT JOIN (
+                SELECT i.object_id, ic.column_id
+                FROM sys.indexes i
+                JOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id
+                WHERE i.is_primary_key = 1
+            ) pk ON c.object_id = pk.object_id AND c.column_id = pk.column_id
+            WHERE c.object_id = t.object_id
+            ORDER BY c.column_id
+            FOR JSON PATH
+        ) AS Columns
+    FROM sys.tables t
+    ORDER BY t.name
+    FOR JSON PATH
+);
+
+-- 2. Foreign key relationships
+DECLARE @fks NVARCHAR(MAX);
+SET @fks = (
+    SELECT 
+        fk.name AS ForeignKeyName,
+        tp.name AS ParentTable,
+        ref.name AS ReferencedTable
+    FROM sys.foreign_keys fk
+    JOIN sys.tables tp ON fk.parent_object_id = tp.object_id
+    JOIN sys.tables ref ON fk.referenced_object_id = ref.object_id
+    ORDER BY ParentTable
+    FOR JSON PATH
+);
+
+-- 3. Sample data (top 5 rows from each table)
+DECLARE @sample NVARCHAR(MAX) = N'';
+DECLARE @sql NVARCHAR(MAX) = N'';
+DECLARE @tbl NVARCHAR(128);
+DECLARE tbl_cursor CURSOR FOR
+SELECT name FROM sys.tables ORDER BY name;
+
+OPEN tbl_cursor;
+FETCH NEXT FROM tbl_cursor INTO @tbl;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    SET @sql = N'
+        SELECT TOP 5 * 
+        FROM [' + @tbl + '] 
+        FOR JSON PATH
+    ';
+    DECLARE @result NVARCHAR(MAX);
+    EXEC sp_executesql @sql, N'', @result = @result OUTPUT;
+
+    SET @sample = ISNULL(@sample, N'') + 
+        CASE WHEN LEN(@result) > 0 
+            THEN '{"Table":"' + @tbl + '","Sample":' + @result + '},'
+            ELSE '{"Table":"' + @tbl + '","Sample":[]},'
+        END;
+
+    FETCH NEXT FROM tbl_cursor INTO @tbl;
+END
+CLOSE tbl_cursor;
+DEALLOCATE tbl_cursor;
+
+-- Remove trailing comma
+IF LEN(@sample) > 0 SET @sample = LEFT(@sample, LEN(@sample) - 1);
+
+-- 4. Combine into final JSON
+SET @json = '{
+    "Tables": ' + @tables + ',
+    "ForeignKeys": ' + @fks + ',
+    "Samples": [' + @sample + ']
+}';
+
+-- Output JSON
+PRINT @json;
